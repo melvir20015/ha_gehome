@@ -12,12 +12,13 @@ _LOGGER = logging.getLogger(__name__)
 class BiacHvacModeOptionsConverter(OptionsConverter):
     @property
     def options(self) -> List[str]:
-        return [HVACMode.AUTO, HVACMode.COOL, HVACMode.FAN_ONLY]
+        return [HVACMode.AUTO, HVACMode.COOL, HVACMode.HEAT, HVACMode.FAN_ONLY]
     def from_option_string(self, value: str) -> Any:
         try:
             return {
                 HVACMode.AUTO: ErdAcOperationMode.ENERGY_SAVER,
                 HVACMode.COOL: ErdAcOperationMode.COOL,
+                HVACMode.HEAT: ErdAcOperationMode.HEAT,
                 HVACMode.FAN_ONLY: ErdAcOperationMode.FAN_ONLY
             }.get(value)
         except:
@@ -29,6 +30,7 @@ class BiacHvacModeOptionsConverter(OptionsConverter):
                 ErdAcOperationMode.ENERGY_SAVER: HVACMode.AUTO,
                 ErdAcOperationMode.AUTO: HVACMode.AUTO,
                 ErdAcOperationMode.COOL: HVACMode.COOL,
+                ErdAcOperationMode.HEAT: HVACMode.HEAT,
                 ErdAcOperationMode.FAN_ONLY: HVACMode.FAN_ONLY
             }.get(value)
         except:
