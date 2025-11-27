@@ -13,6 +13,9 @@ class PacHvacModeOptionsConverter(OptionsConverter):
     def __init__(self, available_modes: ErdAcAvailableModes):
         self._available_modes = available_modes
 
+    def update_available_modes(self, available_modes: ErdAcAvailableModes):
+        self._available_modes = available_modes
+
     @property
     def options(self) -> List[str]:
         modes = [HVACMode.COOL, HVACMode.FAN_ONLY]
@@ -56,6 +59,12 @@ class GePacClimate(GeClimate):
         #construct the converter based on the available modes
         self._hvac_mode_converter = PacHvacModeOptionsConverter(self._modes)
 
+    def _refresh_available_modes(self):
+        available_modes = self.api.try_get_erd_value(ErdCode.AC_AVAILABLE_MODES)
+        if available_modes != self._modes:
+            self._modes = available_modes
+            self._hvac_mode_converter.update_available_modes(self._modes)
+
     @property
     def min_temp(self) -> float:
         temp = 64
@@ -67,5 +76,10 @@ class GePacClimate(GeClimate):
     def max_temp(self) -> float:
         temp = 86
         if self._temp_range:
-            temp = self._temp_range.max        
+            temp = self._temp_range.max
         return self._convert_temp(temp)
+
+    @property
+    def hvac_modes(self) -> List[str]:
+        self._refresh_available_modes()
+        return super().hvac_modes

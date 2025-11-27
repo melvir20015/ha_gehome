@@ -13,6 +13,9 @@ class WacHvacModeOptionsConverter(OptionsConverter):
     def __init__(self, available_modes: ErdAcAvailableModes):
         self._available_modes = available_modes
 
+    def update_available_modes(self, available_modes: ErdAcAvailableModes):
+        self._available_modes = available_modes
+
     @property
     def options(self) -> List[str]:
         modes = [HVACMode.AUTO, HVACMode.COOL, HVACMode.FAN_ONLY]
@@ -49,3 +52,15 @@ class GeWacClimate(GeClimate):
     def __init__(self, api: ApplianceApi):
         available_modes = api.try_get_erd_value(ErdCode.AC_AVAILABLE_MODES)
         super().__init__(api, WacHvacModeOptionsConverter(available_modes), AcFanModeOptionsConverter(), AcFanOnlyFanModeOptionsConverter())
+        self._available_modes = available_modes
+
+    def _refresh_available_modes(self):
+        available_modes = self.api.try_get_erd_value(ErdCode.AC_AVAILABLE_MODES)
+        if available_modes != self._available_modes:
+            self._available_modes = available_modes
+            self._hvac_mode_converter.update_available_modes(self._available_modes)
+
+    @property
+    def hvac_modes(self) -> List[str]:
+        self._refresh_available_modes()
+        return super().hvac_modes
