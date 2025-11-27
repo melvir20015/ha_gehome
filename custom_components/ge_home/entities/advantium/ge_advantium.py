@@ -6,14 +6,14 @@ from random import randrange
 from gehomesdk import (
     ErdCode,
     ErdPersonality,
-    ErdAdvantiumCookStatus, 
+    ErdAdvantiumCookStatus,
     ErdAdvantiumCookSetting, 
     AdvantiumOperationMode, 
     AdvantiumCookSetting,
     ErdAdvantiumRemoteCookModeConfig,
-    ADVANTIUM_OPERATION_MODE_COOK_SETTING_MAPPING     
+    ADVANTIUM_OPERATION_MODE_COOK_SETTING_MAPPING
 )
-from gehomesdk.erd.values.advantium.advantium_enums import CookAction, CookMode
+from gehomesdk.erd.values.advantium import advantium_enums
 
 from homeassistant.components.sensor import SensorDeviceClass
 from homeassistant.const import ATTR_TEMPERATURE
@@ -23,6 +23,17 @@ from ..common import GeAbstractWaterHeater
 from .const import *
 
 _LOGGER = logging.getLogger(__name__)
+
+CookAction = getattr(advantium_enums, "CookAction", None)
+CookMode = getattr(advantium_enums, "CookMode", None)
+
+if CookAction is None:
+    msg = (
+        "gehomesdk instalado no incluye CookAction. "
+        "Instale gehomesdk==2025.5.0 para compatibilidad con Advantium."
+    )
+    _LOGGER.error(msg)
+    raise ImportError(msg)
 
 class GeAdvantium(GeAbstractWaterHeater):
     """GE Appliance Advantium"""
