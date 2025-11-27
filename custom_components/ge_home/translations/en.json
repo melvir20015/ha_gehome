@@ -15,12 +15,21 @@
           "password": "Password",
           "region": "Region"
         }
+      },
+      "reauth": {
+        "title": "Reauthenticate Account",
+        "description": "Please re-enter your credentials to continue using GE Home.",
+        "data": {
+          "username": "Username",
+          "password": "Password",
+          "region": "Region"
+        }
       }
     },
     "error": {
-      "cannot_connect": "Failed to connect",
-      "invalid_auth": "Invalid authentication",
-      "unknown": "Unexpected error"
+      "cannot_connect": "Failed to connect to SmartHQ",
+      "invalid_auth": "Invalid authentication provided, please check credentials",
+      "unknown": "An unexpected error occurred"
     },
     "abort": {
       "already_configured_account": "Account is already configured"
